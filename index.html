@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hospital readmission prediction">
+  <title>Hospital Readmission Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="background-slideshow" aria-hidden="true">
+    <div class="background-slide slide-one active"></div>
+    <div class="background-slide slide-two"></div>
+    <div class="background-shade"></div>
+  </div>
+  <div class="background-orb orb-one"></div>
+  <div class="background-orb orb-two"></div>
+
+  <header class="header">
+    <a class="brand" href="/" aria-label="Hospital Predict home">
+      <span class="brand-mark">H+</span>
+      <span>Hospital Predict</span>
+    </a>
+    <div class="step-track" aria-label="Prediction progress">
+      <div class="step active" data-step="1"><span>1</span><small>Optional</small></div>
+      <i></i>
+      <div class="step" data-step="2"><span>2</span><small>Required</small></div>
+      <i></i>
+      <div class="step" data-step="3"><span>3</span><small>Result</small></div>
+    </div>
+  </header>
+
+  <main>
+    <section id="page-step1" class="page active">
+      <div class="intro">
+        <p class="eyebrow">Patient assessment</p>
+        <h1>Hospital readmission risk</h1>
+        <p>Start with the optional patient and billing details. Blank optional fields are sent as <code>null</code>.</p>
+      </div>
+
+      <form id="form-step1" class="card" novalidate>
+        <div class="card-heading">
+          <div><span class="card-number">01</span><h2>Optional details</h2></div>
+          <p>These fields improve the context available to the model.</p>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="gender">Gender <em>Optional</em></label>
+            <select id="gender" name="gender">
+              <option value="">Select gender</option>
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="bpl_card">BPL card <em>Optional</em></label>
+            <select id="bpl_card" name="bpl_card">
+              <option value="">Select status</option>
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="insurance_type">Insurance type <em>Optional</em></label>
+            <select id="insurance_type" name="insurance_type">
+              <option value="">Select insurance</option>
+              <option value="ESI">ESI</option>
+              <option value="Private">Private</option>
+              <option value="Ayushman">Ayushman</option>
+              <option value="NONE">NONE (no insurance)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cost_category">Cost category <em>Optional</em></label>
+            <select id="cost_category" name="cost_category">
+              <option value="">Select category</option>
+              <option value="Pharmacy">Pharmacy</option>
+              <option value="Room">Room</option>
+              <option value="Procedure">Procedure</option>
+              <option value="Lab">Lab</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="total_cost_inr">Total cost (INR) <em>Optional</em></label>
+            <input id="total_cost_inr" name="total_cost_inr" type="number" min="0" max="20000000" step="0.01" placeholder="e.g. 56890">
+          </div>
+          <div class="field">
+            <label for="govt_subsidy_inr">Government subsidy (INR) <em>Optional</em></label>
+            <input id="govt_subsidy_inr" name="govt_subsidy_inr" type="number" min="0" max="20000000" step="0.01" placeholder="e.g. 56800">
+          </div>
+        </div>
+        <div class="actions end">
+          <button id="btn-to-step2" class="button primary" type="submit">Next <span>→</span></button>
+        </div>
+      </form>
+    </section>
+
+    <section id="page-step2" class="page">
+      <div class="intro">
+        <p class="eyebrow">Clinical and admission data</p>
+        <h1>Required details</h1>
+        <p>Dates are converted to <code>dd/mm/yyyy</code>. Length of stay is calculated by the backend.</p>
+      </div>
+
+      <form id="form-step2" class="card" novalidate>
+        <div class="card-heading">
+          <div><span class="card-number">02</span><h2>Required details</h2></div>
+          <p>All fields below are required by the prediction model.</p>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="age">Age <b>*</b></label>
+            <input id="age" name="age" type="number" min="0" max="120" required placeholder="0–120">
+          </div>
+          <div class="field">
+            <label for="comorbidity_count">Comorbidity count <b>*</b></label>
+            <input id="comorbidity_count" name="comorbidity_count" type="number" min="0" max="10" required placeholder="0–10">
+          </div>
+          <div class="field">
+            <label for="prev_admissions">Previous admissions <b>*</b></label>
+            <input id="prev_admissions" name="prev_admissions" type="number" min="0" max="10" required placeholder="0–10">
+          </div>
+          <div class="field">
+            <label for="num_procedures">Number of procedures <b>*</b></label>
+            <input id="num_procedures" name="num_procedures" type="number" min="0" max="20" required placeholder="0–20">
+          </div>
+          <div class="field">
+            <label for="admit_date">Admission date <b>*</b></label>
+            <input id="admit_date" name="admit_date" type="date" required>
+          </div>
+          <div class="field">
+            <label for="discharge_date">Discharge date <b>*</b></label>
+            <input id="discharge_date" name="discharge_date" type="date" required>
+          </div>
+          <div class="field">
+            <label for="admit_type">Admission type <b>*</b></label>
+            <select id="admit_type" name="admit_type" required>
+              <option value="">Select type</option>
+              <option value="Emergency">Emergency</option>
+              <option value="Elective">Elective</option>
+              <option value="OPD">OPD</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ward_type">Ward type <b>*</b></label>
+            <select id="ward_type" name="ward_type" required>
+              <option value="">Select ward</option>
+              <option value="ICU">ICU</option>
+              <option value="HDU">HDU</option>
+              <option value="NICU">NICU</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="discharge_type">Discharge type <b>*</b></label>
+            <select id="discharge_type" name="discharge_type" required>
+              <option value="">Select outcome</option>
+              <option value="Expired">Expired</option>
+              <option value="Recovered">Recovered</option>
+              <option value="LAMA">LAMA</option>
+              <option value="Referred">Referred</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="charlson_index">Charlson index <b>*</b></label>
+            <input id="charlson_index" name="charlson_index" type="number" min="0" max="6" required placeholder="0–6">
+          </div>
+          <div class="field">
+            <label for="hba1c">HbA1c <b>*</b></label>
+            <input id="hba1c" name="hba1c" type="number" min="3" max="15" step="0.01" required placeholder="3–15">
+          </div>
+          <div class="field">
+            <label for="creatinine">Creatinine <b>*</b></label>
+            <input id="creatinine" name="creatinine" type="number" min="0.35" max="16" step="0.01" required placeholder="0.35–16">
+          </div>
+          <div class="field">
+            <label for="haemoglobin">Haemoglobin <b>*</b></label>
+            <input id="haemoglobin" name="haemoglobin" type="number" min="3" max="19" step="0.01" required placeholder="3–19">
+          </div>
+          <div class="field">
+            <label for="systolic_bp">Systolic BP <b>*</b></label>
+            <input id="systolic_bp" name="systolic_bp" type="number" min="80" max="225" step="0.01" required placeholder="80–225">
+          </div>
+          <div class="field">
+            <label for="tier">Hospital tier <b>*</b></label>
+            <select id="tier" name="tier" required>
+              <option value="">Select tier</option>
+              <option value="tier1">Tier 1</option>
+              <option value="tier2">Tier 2</option>
+              <option value="tier3">Tier 3</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="beds">Number of beds <b>*</b></label>
+            <input id="beds" name="beds" type="number" min="40" max="2500" required placeholder="40–2500">
+          </div>
+          <div class="field">
+            <label for="teaching">Teaching hospital <b>*</b></label>
+            <select id="teaching" name="teaching" required>
+              <option value="">Select status</option>
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+          <fieldset class="field full">
+            <legend>Diagnosis categories <b>*</b> <small>Select one or more</small></legend>
+            <div class="chips">
+              <label><input type="checkbox" name="diag_category" value="Cardiovascular"><span>Cardiovascular</span></label>
+              <label><input type="checkbox" name="diag_category" value="Endocrine"><span>Endocrine</span></label>
+              <label><input type="checkbox" name="diag_category" value="Respiratory"><span>Respiratory</span></label>
+              <label><input type="checkbox" name="diag_category" value="Infectious"><span>Infectious</span></label>
+              <label><input type="checkbox" name="diag_category" value="Gastrointestinal"><span>Gastrointestinal</span></label>
+              <label><input type="checkbox" name="diag_category" value="Neoplasm"><span>Neoplasm</span></label>
+              <label><input type="checkbox" name="diag_category" value="Injury"><span>Injury</span></label>
+              <label><input type="checkbox" name="diag_category" value="Neurological"><span>Neurological</span></label>
+              <label><input type="checkbox" name="diag_category" value="Genitourinary"><span>Genitourinary</span></label>
+              <label><input type="checkbox" name="diag_category" value="Obstetric"><span>Obstetric</span></label>
+              <label><input type="checkbox" name="diag_category" value="Perinatal"><span>Perinatal</span></label>
+            </div>
+          </fieldset>
+        </div>
+        <label class="consent" for="prediction_consent">
+          <input id="prediction_consent" type="checkbox" required>
+          <span>I consent to the use of the information provided only for generating this prediction.</span>
+        </label>
+        <div id="form-error" class="alert" role="alert" aria-live="polite"></div>
+        <div class="actions">
+          <button id="btn-back" class="button secondary" type="button"><span>←</span> Back</button>
+          <button id="btn-predict" class="button primary" type="submit">
+            <span class="button-label">Predict readmission</span>
+            <span class="spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section id="page-result" class="page">
+      <div class="result card">
+        <div class="result-icon">✓</div>
+        <p class="eyebrow">Assessment complete</p>
+        <h1>Prediction</h1>
+        <div id="result-value" class="result-value"></div>
+        <p id="result-basis" class="result-note">This result is based only on the patient information provided.</p>
+
+        <p id="missing-warning" class="missing-warning" aria-live="polite"></p>
+        <details class="patient-info">
+          <summary>Patient information provided <span aria-hidden="true">⌄</span></summary>
+          <div class="patient-info-content">
+            <div class="patient-info-actions"><button id="btn-copy" type="button">Copy information</button></div>
+            <pre id="result-payload"></pre>
+          </div>
+        </details>
+        <button id="btn-restart" class="button primary" type="button">New prediction</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
