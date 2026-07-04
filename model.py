@@ -194,4 +194,4 @@ def predict(input_data: InputModel):
 
     prediction = pipe.predict(df)[0]
 
-    return {"prediction": int(prediction)}
+    return {"prediction": "Patient will be readmitted." if int(prediction)==1 else "Patient will not be readmitted." }
