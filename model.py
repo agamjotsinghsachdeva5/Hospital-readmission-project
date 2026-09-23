@@ -131,6 +131,12 @@ app.mount(
 def frontend():
     return FileResponse(BASE_DIR / "index.html")
 
+@app.get("/health")
+def health_check():
+    return {
+        "status": "running"
+    }
+
 @app.get("/styles.css", include_in_schema=False)
 def frontend_styles():
     return FileResponse(BASE_DIR / "styles.css", media_type="text/css")
