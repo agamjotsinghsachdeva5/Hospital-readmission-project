@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, field_validator, Field
 from typing import List, Optional
@@ -131,11 +131,19 @@ app.mount(
 def frontend():
     return FileResponse(BASE_DIR / "index.html")
 
+@app.head("/", include_in_schema=False)
+def frontend_head():
+    return Response(status_code=200)
+
 @app.get("/health")
 def health_check():
     return {
         "status": "running"
     }
+
+@app.head("/health", include_in_schema=False)
+def health_check_head():
+    return Response(status_code=200)
 
 @app.get("/styles.css", include_in_schema=False)
 def frontend_styles():
